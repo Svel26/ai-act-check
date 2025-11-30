@@ -1,9 +1,22 @@
-﻿{
+{
   "face_recognition": "High Risk: Biometrics (Annex III.1)",
   "dlib": "High Risk: Biometrics (Annex III.1)",
   "opencv-python": "Potential Risk: Visual Analysis",
   "cv2": "Potential Risk: Visual Analysis",
   "sklearn": "General ML (Check for Employment/Credit Scoring)",
+  "scikit-learn": "General ML (Check for Employment/Credit Scoring)",
   "torch": "Deep Learning (Check for Generative/Biometric)",
-  "pypdf2": "Potential Risk: Resume Parsing (Employment - Annex III.4)"
+  "tensorflow": "Deep Learning (Check for Generative/Biometric)",
+  "keras": "Deep Learning (Check for Generative/Biometric)",
+  "spacy": "Potential Risk: NLP/Employment Screening",
+  "nltk": "Potential Risk: NLP/Employment Screening",
+  "mediapipe": "High Risk: Biometrics/Gait Analysis",
+  "face-api.js": "High Risk: Biometrics (Annex III.1)",
+  "@tensorflow/tfjs": "Deep Learning (Browser-based)",
+  "pdf-parse": "Potential Risk: Document Parsing (Annex III.4 - Employment)",
+  "pdfjs-dist": "Potential Risk: Document Parsing (Annex III.4 - Employment)",
+  "@react-pdf/renderer": "Potential Risk: Document Generation (transparency obligations)",
+  "natural": "Potential Risk: NLP/Employment Screening",
+  "tesseract.js": "Potential Risk: OCR/Data Extraction",
+  "tesseract": "Potential Risk: OCR / Data Extraction"
 }
