@@ -1,0 +1,9 @@
+﻿{
+  "face_recognition": "High Risk: Biometrics (Annex III.1)",
+  "dlib": "High Risk: Biometrics (Annex III.1)",
+  "opencv-python": "Potential Risk: Visual Analysis",
+  "cv2": "Potential Risk: Visual Analysis",
+  "sklearn": "General ML (Check for Employment/Credit Scoring)",
+  "torch": "Deep Learning (Check for Generative/Biometric)",
+  "pypdf2": "Potential Risk: Resume Parsing (Employment - Annex III.4)"
+}
