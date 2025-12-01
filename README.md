@@ -5,7 +5,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Status](https://img.shields.io/badge/Compliance-Automated-green)]()
-[![Sovereign Code CI](https://github.com/svel26/ai-act-check/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/ai-act-check/actions/workflows/ci.yml)
+[![Sovereign Code CI](https://github.com/svel26/ai-act-check/actions/workflows/ci.yml/badge.svg)](https://github.com/svel26/ai-act-check/actions/workflows/ci.yml)
 
 ## ⚡ The Problem
 The **EU AI Act** is here. If your software uses ML libraries (`torch`, `sklearn`, `face_recognition`), you might be classified as **\"High Risk\"** under Article 6.
