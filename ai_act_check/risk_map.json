@@ -23,5 +23,15 @@
   "onnx": "General ML (Interoperability)",
   "ml5.js": "General ML (Browser-based)",
   "coreml": "Deep Learning (Apple Ecosystem)",
-  "pytorch": "Deep Learning (Check for Generative/Biometric)"
+  "pytorch": "Deep Learning (Check for Generative/Biometric)",
+  "gorgonia": "Deep Learning (Go)",
+  "gonum": "General ML (Go)",
+  "tch": "Deep Learning (Rust - Torch binding)",
+  "burn": "Deep Learning (Rust)",
+  "candle": "Deep Learning (Rust)",
+  "deeplearning4j": "Deep Learning (Java)",
+  "djl": "Deep Learning (Java)",
+  "torch-rb": "Deep Learning (Ruby)",
+  "tensorflow.rb": "Deep Learning (Ruby)",
+  "php-ai/php-ml": "General ML (PHP)"
 }

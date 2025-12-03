@@ -44,7 +44,10 @@ def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
     detected: Set[str] = set()
     risks: Set[str] = set()
 
-    target_files = {"requirements.txt", "package.json", "pyproject.toml", "Pipfile"}
+    target_files = {
+        "requirements.txt", "package.json", "pyproject.toml", "Pipfile",
+        "go.mod", "Cargo.toml", "pom.xml", "Gemfile", "composer.json", "build.gradle"
+    }
 
     for root, _, files in os.walk(repo_path):
         for file in files:
@@ -56,7 +59,8 @@ def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
                         for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
                             if risk_lib in content:
                                 # heuristic to reduce false positives for manifests
-                                pattern = rf'["\'\s]({re.escape(risk_lib)})["\'\s:\>=]'
+                                # We look for the library name surrounded by quotes, whitespace, or common delimiters
+                                pattern = rf'(?:^|[\s"\'/<>.-])({re.escape(risk_lib)})(?:$|[\s"\'/:>=<>.-])'
                                 if re.search(pattern, content):
                                     detected.add(risk_lib)
                                     risks.add(risk_desc)
