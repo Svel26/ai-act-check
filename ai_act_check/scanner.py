@@ -66,6 +66,23 @@ def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
 
     return detected, risks
 
+def scan_libraries(libs: List[str]) -> Dict[str, Any]:
+    """
+    Scans a list of library names against the risk map.
+    """
+    detected: Set[str] = set()
+    risks: Set[str] = set()
+
+    for lib_name in libs:
+        # Check if the library name matches any key in the risk map
+        # We check both exact match and if the library starts with a risk map key
+        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
+            if lib_name == risk_lib or lib_name.startswith(risk_lib):
+                detected.add(lib_name)
+                risks.add(risk_desc)
+
+    return _format_results(sorted(list(detected)), sorted(list(risks)))
+
 def scan_repository(repo_path: str) -> Dict[str, Any]:
     ast_scanner = CodeScanner()
     for root, _, files in os.walk(repo_path):
@@ -87,12 +104,15 @@ def scan_repository(repo_path: str) -> Dict[str, Any]:
     final_libs = sorted(list(ast_scanner.detected.union(dep_libs)))
     final_risks = sorted(list(ast_scanner.risks.union(dep_risks)))
 
+    return _format_results(final_libs, final_risks)
+
+def _format_results(detected_libs: List[str], detected_risks: List[str]) -> Dict[str, Any]:
     return {
         "annex_iv_technical_documentation": {
             "section_2_b_design_specifications": {
                 "general_logic": {
-                    "detected_libraries": final_libs,
-                    "risk_classification_detected": final_risks,
+                    "detected_libraries": detected_libs,
+                    "risk_classification_detected": detected_risks,
                     "model_architecture": None
                 },
                 "key_design_choices": {

@@ -18,5 +18,10 @@
   "@react-pdf/renderer": "Potential Risk: Document Generation (transparency obligations)",
   "natural": "Potential Risk: NLP/Employment Screening",
   "tesseract.js": "Potential Risk: OCR/Data Extraction",
-  "tesseract": "Potential Risk: OCR / Data Extraction"
+  "tesseract": "Potential Risk: OCR / Data Extraction",
+  "tensorflow.js": "Deep Learning (Browser-based)",
+  "onnx": "General ML (Interoperability)",
+  "ml5.js": "General ML (Browser-based)",
+  "coreml": "Deep Learning (Apple Ecosystem)",
+  "pytorch": "Deep Learning (Check for Generative/Biometric)"
 }

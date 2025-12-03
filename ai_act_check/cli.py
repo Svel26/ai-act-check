@@ -19,7 +19,10 @@ def main():
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     p_scan = sub.add_parser('scan', help='Run static AST scanner on a repository')
-    p_scan.add_argument('path', help='Path to repository to scan')
+    p_scan.add_argument('path', nargs='?', help='Path to repository to scan (optional if --libs is used)')
+    p_scan.add_argument('--libs', help='Comma-separated list of libraries to scan manually (e.g. "tensorflow,cv2")')
+
+    p_manual = sub.add_parser('manual', help='Interactive manual entry of libraries')
 
     p_draft = sub.add_parser('draft', help='Generate Annex IV draft from scan output')
     p_draft.add_argument('scan_json', nargs='?', help='Path to scan JSON file (optional)')
@@ -27,21 +30,55 @@ def main():
     args = parser.parse_args()
 
     if args.cmd == 'scan':
-        run_scan(args.path)
+        run_scan(args.path, args.libs)
+    elif args.cmd == 'manual':
+        run_manual()
     elif args.cmd == 'draft':
         run_draft(args.scan_json)
 
-def run_scan(repo_path):
+def run_scan(repo_path, libs=None):
     try:
         # Lazy import to keep CLI fast if missing deps
-        from ai_act_check.scanner import scan_repository
+        from ai_act_check.scanner import scan_repository, scan_libraries
     except Exception:
         print("Error: scanner module not available. Ensure package is installed or run from repo.")
         return
 
-    result = scan_repository(repo_path)
+    if libs:
+        lib_list = [l.strip() for l in libs.split(',')]
+        result = scan_libraries(lib_list)
+    elif repo_path:
+        result = scan_repository(repo_path)
+    else:
+        print("Error: You must provide either a repository path or --libs argument.")
+        return
+
     out = json.dumps(result, indent=2)
     print(out)
+
+def run_manual():
+    try:
+        from ai_act_check.scanner import scan_libraries
+    except Exception:
+        print("Error: scanner module not available.")
+        return
+
+    print("--- AI Act Compliance: Manual Mode ---")
+    print("Enter your AI/ML libraries separated by commas (e.g., tensorflow, face-api.js, torch).")
+    user_input = input("Libraries: ")
+    
+    if not user_input.strip():
+        print("No libraries entered. Exiting.")
+        return
+
+    lib_list = [l.strip() for l in user_input.split(',')]
+    result = scan_libraries(lib_list)
+    
+    print("\n--- COMPLIANCE SCAN COMPLETE ---")
+    print(json.dumps(result, indent=2))
+    
+    print("\nTo generate a draft, save the above JSON to a file (e.g., scan.json) and run:")
+    print("  ai-act-check draft scan.json")
 
 def run_draft(scan_json_path):
     # Load scan data from file
