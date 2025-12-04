@@ -96,18 +96,50 @@ class CodeScanner(ast.NodeVisitor):
 def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
     detected: Set[str] = set()
     risks: Set[str] = set()
-    detected: Set[str] = set()
-    risks: Set[str] = set()
 
-    for lib_name in libs:
-        # Check if the library name matches any key in the risk map
-        # We check both exact match and if the library starts with a risk map key
+    target_files = {
+        "requirements.txt", "package.json", "pyproject.toml", "Pipfile",
+        "go.mod", "Cargo.toml", "pom.xml", "Gemfile", "composer.json", "build.gradle"
+    }
+
+    for root, _, files in os.walk(repo_path):
+        for file in files:
+            full_path = os.path.join(root, file)
+            
+            # Specialized Parsers
+            if file == "poetry.lock":
+                detected.update(_parse_poetry_lock(full_path))
+                continue
+            elif file == "package-lock.json":
+                detected.update(_parse_package_lock(full_path))
+                continue
+            elif file == "requirements.txt":
+                detected.update(_parse_requirements(full_path))
+                continue
+            
+            # Fallback for other manifests
+            if file in target_files:
+                try:
+                    with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+                        content = f.read()
+                        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
+                            if risk_lib in content:
+                                # heuristic to reduce false positives for manifests
+                                # We look for the library name surrounded by quotes, whitespace, or common delimiters
+                                pattern = rf'(?:^|[\s"\'/<>.-])({re.escape(risk_lib)})(?:$|[\s"\'/:>=<>.-])'
+                                if re.search(pattern, content):
+                                    detected.add(risk_lib)
+                                    risks.add(risk_desc)
+                except Exception:
+                    continue
+
+    # Map detected libs to risks
+    for lib in detected:
         for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
-            if lib_name == risk_lib or lib_name.startswith(risk_lib):
-                detected.add(lib_name)
+            if lib == risk_lib or lib.startswith(risk_lib):
                 risks.add(risk_desc)
 
-    return _format_results(sorted(list(detected)), sorted(list(risks)))
+    return detected, risks
 
 def scan_repository(repo_path: str) -> Dict[str, Any]:
     ast_scanner = CodeScanner()
