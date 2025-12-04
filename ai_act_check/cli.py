@@ -96,25 +96,15 @@ def run_draft(scan_json_path):
         print("No scan JSON provided. Please run 'ai-act-check scan <path>' first or provide a scan JSON file.")
         return
 
-    # Load API keys from env (dotenv handled at startup)
-    openrouter_key = os.getenv('OPENROUTER_API_KEY')
-    openai_key = os.getenv('OPENAI_API_KEY')
-
-    if not openrouter_key and not openai_key:
-        print("No API key detected. The static scan completed, but the Draft (LLM) step requires an API key.")
-        print("Sign up at https://openrouter.ai/ or https://platform.openai.com/ to obtain a key, then set it as OPENROUTER_API_KEY or OPENAI_API_KEY in your environment or a .env file.")
-        return
-
     try:
-        from ai_act_check.drafter import generate_annex_iv
+        from ai_act_check.public_drafter import generate_teaser
     except Exception:
         print("Error: drafter module not available. Ensure package is installed or run from repo.")
         return
 
-    provider = 'openrouter' if openrouter_key else 'openai'
-    print(f"[*] Using provider: {provider}")
+    print(f"[*] Generating Teaser Draft...")
     try:
-        report = generate_annex_iv(scan_data, provider=provider)
+        report = generate_teaser(scan_data)
     except Exception as e:
         print(f"Error during draft generation: {e}")
         return
@@ -123,13 +113,15 @@ def run_draft(scan_json_path):
         print("Draft generation failed or returned empty result.")
         return
 
-    print("\n--- GENERATED ANNEX IV DRAFT ---\n")
+    print("\n--- GENERATED ANNEX IV DRAFT (TEASER) ---\n")
     print(report)
 
     try:
-        with open('ANNEX_IV_DRAFT.txt', 'w', encoding='utf-8') as f:
+        with open('ANNEX_IV_DRAFT.md', 'w', encoding='utf-8') as f:
             f.write(report)
-        print("\n[+] Saved to ANNEX_IV_DRAFT.txt")
+        print("\n[+] Saved to ANNEX_IV_DRAFT.md")
+        print("[!] This is a preliminary draft. For a full legal analysis and certified PDF, visit:")
+        print("    https://sovereign-code.eu")
     except Exception as e:
         print(f"Error saving draft: {e}")
 

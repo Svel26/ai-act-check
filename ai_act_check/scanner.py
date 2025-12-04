@@ -141,17 +141,88 @@ def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
 
     return detected, risks
 
+def _convert_ipynb_to_py(file_path: str) -> str:
+    """Converts a .ipynb file to a temporary .py file string content."""
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            nb = json.load(f)
+        
+        code_cells = []
+        for cell in nb.get("cells", []):
+            if cell.get("cell_type") == "code":
+                # Filter out magic commands
+                source_lines = [
+                    line for line in cell["source"] 
+                    if not line.strip().startswith(("!", "%"))
+                ]
+                code_cells.append("".join(source_lines))
+        return "\n\n".join(code_cells)
+    except Exception:
+        return ""
+
+def _extract_version(repo_path: str) -> str:
+    """Attempts to extract project version from standard manifest files."""
+    project_version = "Unknown"
+    try:
+        # Check package.json
+        pkg_json_path = os.path.join(repo_path, "package.json")
+        if os.path.exists(pkg_json_path):
+            with open(pkg_json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                project_version = data.get("version", "Unknown")
+        
+        # Check pyproject.toml
+        if project_version == "Unknown":
+            toml_path = os.path.join(repo_path, "pyproject.toml")
+            if os.path.exists(toml_path):
+                with open(toml_path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        if line.strip().startswith("version"):
+                            parts = line.split("=")
+                            if len(parts) == 2:
+                                project_version = parts[1].strip().strip('"').strip("'")
+                                break
+        
+        # Check setup.py
+        if project_version == "Unknown":
+            setup_path = os.path.join(repo_path, "setup.py")
+            if os.path.exists(setup_path):
+                with open(setup_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    match = re.search(r"version\s*=\s*['\"]([^'\"]+)['\"]", content)
+                    if match:
+                        project_version = match.group(1)
+    except Exception:
+        pass
+    return project_version
+
 def scan_repository(repo_path: str) -> Dict[str, Any]:
     ast_scanner = CodeScanner()
+    
+    # Extract version first
+    project_version = _extract_version(repo_path)
+
     for root, _, files in os.walk(repo_path):
         for file in files:
+            full_path = os.path.join(root, file)
+            
+            # Handle .py files
             if file.endswith(".py"):
-                full_path = os.path.join(root, file)
                 try:
                     with open(full_path, "r", encoding="utf-8") as f:
                         source = f.read()
                         if len(source) > 5_000_000:
                             continue
+                        tree = ast.parse(source)
+                        ast_scanner.visit(tree)
+                except Exception:
+                    continue
+            
+            # Handle .ipynb files
+            elif file.endswith(".ipynb"):
+                try:
+                    source = _convert_ipynb_to_py(full_path)
+                    if source:
                         tree = ast.parse(source)
                         ast_scanner.visit(tree)
                 except Exception:
@@ -162,7 +233,9 @@ def scan_repository(repo_path: str) -> Dict[str, Any]:
     final_libs = sorted(list(ast_scanner.detected.union(dep_libs)))
     final_risks = sorted(list(ast_scanner.risks.union(dep_risks)))
 
-    return _format_results(final_libs, final_risks)
+    results = _format_results(final_libs, final_risks)
+    results["project_metadata"] = {"version": project_version}
+    return results
 
 def _format_results(detected_libs: List[str], detected_risks: List[str]) -> Dict[str, Any]:
     return {
