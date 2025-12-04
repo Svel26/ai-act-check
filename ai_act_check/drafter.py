@@ -39,7 +39,7 @@ def generate_annex_iv(scan_data: Dict[str, Any], provider: str = "openrouter") -
             from openai import OpenAI
             client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
             model = "google/gemini-2.0-flash-exp:free"
-            system = "You are 'Compl-AI', a EU AI Act Compliance Officer. Produce formal Section 2(b)."
+            system = "You are a compliance assistant. Help the user with their documentation."
             user = "Draft Section 2(b): Design Specifications.\n\nEVIDENCE:\n" + json.dumps(scan_data, indent=2)
             resp = client.chat.completions.create(
                 model=model,
@@ -59,7 +59,7 @@ def generate_annex_iv(scan_data: Dict[str, Any], provider: str = "openrouter") -
             from openai import OpenAI
             client = OpenAI(api_key=api_key)
             model = "gpt-4o"
-            system = "You are 'Compl-AI', a EU AI Act Compliance Officer. Produce formal Section 2(b)."
+            system = "You are a compliance assistant. Help the user with their documentation."
             user = "Draft Section 2(b): Design Specifications.\n\nEVIDENCE:\n" + json.dumps(scan_data, indent=2)
             resp = client.chat.completions.create(
                 model=model,

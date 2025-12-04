@@ -6,7 +6,7 @@ import re
 from typing import Dict, Set, Tuple, List, Any
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-RISK_MAP_PATH = os.path.join(CURRENT_DIR, "risk_map.json")
+RISK_MAP_PATH = os.path.join(CURRENT_DIR, "data", "risk_map.json")
 
 try:
     with open(RISK_MAP_PATH, "r", encoding="utf-8") as f:

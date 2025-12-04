@@ -1,20 +1,19 @@
-# 🇪🇺 AI Act Compliance Scanner (Sovereign Code)
+# 🇪🇺 AI Act Compliance Scanner (Open Core)
 
-> **Don't let a €35M fine stop you from shipping.**
-> The open-source CLI that maps your code to the EU AI Act (Annex IV) in seconds.
+> **The Open Source Standard for EU AI Act Compliance.**
+> Don't pay €10k/year for a black box. Check your compliance in 5 seconds.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Compliance-Automated-green)]()
-[![Sovereign Code CI](https://github.com/svel26/ai-act-check/actions/workflows/ci.yml/badge.svg)](https://github.com/svel26/ai-act-check/actions/workflows/ci.yml)
 
-## ⚡ The Problem
-The **EU AI Act** is here. If your software uses ML libraries (e.g., `torch`, `sklearn`, `tensorflow.js`, `gorgonia`), you might be classified as **"High Risk"** under Article 6.
-* **Lawyers cost:** €500/hour.
-* **Ignorance costs:** Up to 7% of global turnover.
-* **Manual compliance:** Boring, error-prone, and slow.
+## ⚡ The Pain
+The **EU AI Act** is here. If your software uses ML libraries (e.g., `torch`, `sklearn`, `face_recognition`), you are likely regulated.
+*   **Fines:** Up to 7% of global turnover.
+*   **Lawyers:** €500/hour.
+*   **Manual Work:** Weeks of spreadsheet hell.
 
 ## 🛡️ The Solution
-`ai-act-check` is a "Compliance-as-Code" tool. It parses your repository's manifests and code, identifies regulated libraries, and uses an LLM Agent to draft your **Annex IV Technical Documentation**.
+`ai-act-check` is the open-source standard. It scans your code, identifies regulated libraries, and tells you if you are "High Risk."
 
 ## 🚀 Quick Start
 
@@ -23,58 +22,35 @@ The **EU AI Act** is here. If your software uses ML libraries (e.g., `torch`, `s
 pip install ai-act-check
 ```
 
-### 2. The Smoke Test (No API Key needed)
-
-Scan your repo for "High Risk" dependencies locally. It works for Python, Node.js, Go, Rust, Java, Ruby, and PHP.
-
+### 2. Scan Your Repo
 ```bash
 ai-act-check scan ./my-project
 ```
+*Output: Immediate detection of High Risk libraries (Biometrics, Critical Infra, Employment).*
 
-*Output: JSON file with detected libraries and risk triggers.*
-
-### 3. Manual Mode (Interactive)
-
-If your language isn't supported yet, or you want to check specific libraries:
-
-```bash
-ai-act-check manual
-```
-
-Or via CLI flags:
-```bash
-ai-act-check scan --libs "tensorflow, face_recognition"
-```
-
-### 4. Generate the Legal Draft (Requires API Key)
-
-Turn your code scan into a formal legal draft.
-
+### 3. Draft Documentation (Teaser)
 ```bash
 export OPENROUTER_API_KEY="sk-..."
 ai-act-check draft scan_results.json
 ```
+*Generates a basic Annex IV draft.*
 
-*Output: `ANNEX_IV_DRAFT.txt` written in formal legal prose.*
+## 👑 Go Sovereign (Pro)
+Need the **Official PDF**, Audit Trails, and Team Management?
+The Open Source tool is great for developers, but **Sovereign Cloud** is for companies.
 
-## 🌍 Supported Languages
-We automatically scan the following manifest files for high-risk AI/ML libraries:
+| Feature | Open Source | Sovereign Cloud |
+| :--- | :---: | :---: |
+| **Static Scan** | ✅ | ✅ |
+| **Basic Draft** | ✅ | ✅ |
+| **Official Annex IV PDF** | ❌ | ✅ |
+| **Context-Aware Wizard** | ❌ | ✅ |
+| **Audit Trail** | ❌ | ✅ |
+| **Team Management** | ❌ | ✅ |
 
-*   **Python**: `requirements.txt`, `Pipfile`, `pyproject.toml` (plus AST analysis)
-*   **Node.js**: `package.json`
-*   **Go**: `go.mod`
-*   **Rust**: `Cargo.toml`
-*   **Java**: `pom.xml`, `build.gradle`
-*   **Ruby**: `Gemfile`
-*   **PHP**: `composer.json`
+[**Get the Cure -> Sovereign Cloud**](https://sovereign-code.eu)
 
-## 📂 How it Works
-
-1.  **Manifest & Code Analysis:** We parse your dependency files and source code to see *what* libraries are used.
-2.  **Risk Mapping:** Deterministic mapping of libraries to Annex III use cases (Biometrics, Critical Infra, Employment).
-3.  **Agentic Drafting:** An LLM agent (Compl-AI) acts as a Junior Associate to draft the text, strictly grounded in the scan evidence.
-
-## ⚠️ Disclaimer
-
-This tool is for **technical documentation assistance only**. It is not legal advice. You remain responsible for your compliance.
-For full conformity assessments and liability protection, visit [Sovereign Code](https://www.google.com/search?q=https://sovereign-code.com).
+## ⚠️ License
+This project is licensed under the **AGPL v3**.
+If you use this code in a SaaS, you must open-source your SaaS.
+For closed-source usage, contact us for a Commercial License.

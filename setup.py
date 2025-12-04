@@ -6,16 +6,19 @@ long_description = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="ai-act-check",
-    version="0.3.1",
+    version="0.4.0",
     description="Static scanner and Annex IV drafter for EU AI Act compliance (prototype)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/svel26/ai-act-check",
     author="Sovereign Code",
     author_email="noreply@sovereign-code.com",
-    license="Apache-2.0",
+    license="AGPL-3.0",
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
+    package_data={
+        "ai_act_check": ["data/*.json"]
+    },
     install_requires=[
         "python-dotenv>=0.19.0",
         "openai>=0.27.0"
