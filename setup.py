@@ -6,13 +6,13 @@ long_description = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="ai-act-check",
-    version="0.6.0",
+    version="0.6.1",
     description="Static scanner and Annex IV drafter for EU AI Act compliance (prototype)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/svel26/ai-act-check",
-    author="Sovereign Code",
-    author_email="noreply@sovereign-code.com",
+    author="AnnexFour",
+    author_email="noreply@annexfour.com",
     license="AGPL-3.0",
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
@@ -42,6 +42,6 @@ setup(
     ],
     project_urls={
         "Source": "https://github.com/svel26/ai-act-check",
-        "Homepage": "https://sovereign-code.com"
+        "Homepage": "https://annexfour.com"
     }
 )

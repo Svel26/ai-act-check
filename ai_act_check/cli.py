@@ -68,7 +68,7 @@ def run_scan(repo_path, libs=None, output_path=None):
 
     print("\n[!] 3 High Risk libraries detected.")
     print("[+] Want to generate the official Annex IV PDF for this repo?")
-    print("[+] Sign up at: https://sovereign-code.eu")
+    print("[+] Sign up at: https://annexfour.eu")
 
 def run_manual():
     try:

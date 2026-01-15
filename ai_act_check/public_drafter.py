@@ -52,13 +52,13 @@ Based on the detected software components, the assessed classification is: **{ri
 
 ---
 **Want a full legal analysis?**
-Upgrade to the Sovereign Platform to generate a certified, digitally signed PDF with:
+Upgrade to the AnnexFour Platform to generate a certified, digitally signed PDF with:
 - Full Article 6 & Article 27 Analysis
 - Conformity Assessment Procedures
 - Automatic Updates
 - Liability Shield
 
-[Get Certified](https://sovereign-code.eu)
+[Get Certified](https://annexfour.eu)
 """
     return draft
 
