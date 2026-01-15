@@ -21,6 +21,7 @@ def main():
     p_scan = sub.add_parser('scan', help='Run static AST scanner on a repository')
     p_scan.add_argument('path', nargs='?', help='Path to repository to scan (optional if --libs is used)')
     p_scan.add_argument('--libs', help='Comma-separated list of libraries to scan manually (e.g. "tensorflow,cv2")')
+    p_scan.add_argument('--output', help='Path to save JSON output file')
 
     p_manual = sub.add_parser('manual', help='Interactive manual entry of libraries')
 
@@ -30,18 +31,18 @@ def main():
     args = parser.parse_args()
 
     if args.cmd == 'scan':
-        run_scan(args.path, args.libs)
+        run_scan(args.path, args.libs, args.output)
     elif args.cmd == 'manual':
         run_manual()
     elif args.cmd == 'draft':
         run_draft(args.scan_json)
 
-def run_scan(repo_path, libs=None):
+def run_scan(repo_path, libs=None, output_path=None):
     try:
         # Lazy import to keep CLI fast if missing deps
         from ai_act_check.scanner import scan_repository, scan_libraries
-    except Exception:
-        print("Error: scanner module not available. Ensure package is installed or run from repo.")
+    except Exception as e:
+        print(f"Error: scanner module not available. {e}")
         return
 
     if libs:
@@ -54,7 +55,17 @@ def run_scan(repo_path, libs=None):
         return
 
     out = json.dumps(result, indent=2)
-    print(out)
+    
+    if output_path:
+        try:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(out)
+            print(f"[+] Scan results saved to {output_path}")
+        except Exception as e:
+            print(f"Error saving output to {output_path}: {e}")
+    else:
+        print(out)
+
     print("\n[!] 3 High Risk libraries detected.")
     print("[+] Want to generate the official Annex IV PDF for this repo?")
     print("[+] Sign up at: https://sovereign-code.eu")

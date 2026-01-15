@@ -196,6 +196,22 @@ def _extract_version(repo_path: str) -> str:
         pass
     return project_version
 
+def scan_libraries(lib_list: List[str]) -> Dict[str, Any]:
+    detected: Set[str] = set()
+    risks: Set[str] = set()
+
+    for lib in lib_list:
+        lib = lib.strip()
+        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
+            if lib == risk_lib or lib.startswith(risk_lib):
+                detected.add(lib)
+                risks.add(risk_desc)
+    
+    final_libs = sorted(list(detected))
+    final_risks = sorted(list(risks))
+    
+    return _format_results(final_libs, final_risks)
+
 def scan_repository(repo_path: str) -> Dict[str, Any]:
     ast_scanner = CodeScanner()
     
