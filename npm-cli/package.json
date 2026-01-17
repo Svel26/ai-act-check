@@ -1,6 +1,6 @@
 {
     "name": "ai-act-check",
-    "version": "1.0.6",
+    "version": "2.0.0",
     "description": "AnnexFour Compliance Scanner CLI Wrapper",
     "main": "bin/index.js",
     "bin": {

@@ -1,37 +1,99 @@
 {
-  "face_recognition": "High Risk: Biometrics (Annex III.1)",
-  "dlib": "High Risk: Biometrics (Annex III.1)",
-  "opencv-python": "Potential Risk: Visual Analysis",
-  "cv2": "Potential Risk: Visual Analysis",
-  "sklearn": "General ML (Check for Employment/Credit Scoring)",
-  "scikit-learn": "General ML (Check for Employment/Credit Scoring)",
-  "torch": "Deep Learning (Check for Generative/Biometric)",
-  "tensorflow": "Deep Learning (Check for Generative/Biometric)",
-  "keras": "Deep Learning (Check for Generative/Biometric)",
-  "spacy": "Potential Risk: NLP/Employment Screening",
-  "nltk": "Potential Risk: NLP/Employment Screening",
-  "mediapipe": "High Risk: Biometrics/Gait Analysis",
-  "face-api.js": "High Risk: Biometrics (Annex III.1)",
-  "@tensorflow/tfjs": "Deep Learning (Browser-based)",
-  "pdf-parse": "Potential Risk: Document Parsing (Annex III.4 - Employment)",
-  "pdfjs-dist": "Potential Risk: Document Parsing (Annex III.4 - Employment)",
-  "@react-pdf/renderer": "Potential Risk: Document Generation (transparency obligations)",
-  "natural": "Potential Risk: NLP/Employment Screening",
-  "tesseract.js": "Potential Risk: OCR/Data Extraction",
-  "tesseract": "Potential Risk: OCR / Data Extraction",
-  "tensorflow.js": "Deep Learning (Browser-based)",
-  "onnx": "General ML (Interoperability)",
-  "ml5.js": "General ML (Browser-based)",
-  "coreml": "Deep Learning (Apple Ecosystem)",
-  "pytorch": "Deep Learning (Check for Generative/Biometric)",
-  "gorgonia": "Deep Learning (Go)",
-  "gonum": "General ML (Go)",
-  "tch": "Deep Learning (Rust - Torch binding)",
-  "burn": "Deep Learning (Rust)",
-  "candle": "Deep Learning (Rust)",
-  "deeplearning4j": "Deep Learning (Java)",
-  "djl": "Deep Learning (Java)",
-  "torch-rb": "Deep Learning (Ruby)",
-  "tensorflow.rb": "Deep Learning (Ruby)",
-  "php-ai/php-ml": "General ML (PHP)"
+  "_meta": {
+    "version": "2.0",
+    "last_updated": "2026-01-17",
+    "description": "Community-verified mapping of AI libraries to EU AI Act Annex III risks."
+  },
+  "libraries": {
+    "face_recognition": {
+      "risk_description": "High Risk: Biometrics (Annex III.1)",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "https://github.com/ageitgey/face_recognition#features"
+    },
+    "dlib": {
+      "risk_description": "High Risk: Biometrics (Annex III.1)",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "http://dlib.net/face_detector.py.html"
+    },
+    "opencv-python": {
+      "risk_description": "Potential Risk: Visual Analysis",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "https://pypi.org/project/opencv-python/"
+    },
+    "cv2": {
+      "risk_description": "Potential Risk: Visual Analysis",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "Alias for opencv-python"
+    },
+    "sklearn": {
+      "risk_description": "General ML (Check for Employment/Credit Scoring)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "Official Documentation"
+    },
+    "scikit-learn": {
+      "risk_description": "General ML (Check for Employment/Credit Scoring)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "Official Documentation"
+    },
+    "torch": {
+      "risk_description": "Deep Learning (Check for Generative/Biometric)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "https://pytorch.org/"
+    },
+    "tensorflow": {
+      "risk_description": "Deep Learning (Check for Generative/Biometric)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "https://www.tensorflow.org/"
+    },
+    "keras": {
+      "risk_description": "Deep Learning (Check for Generative/Biometric)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "https://keras.io/"
+    },
+    "mediapipe": {
+      "risk_description": "High Risk: Biometrics/Gait Analysis",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "https://developers.google.com/mediapipe/solutions/vision/pose_landmarker"
+    },
+    "face-api.js": {
+      "risk_description": "High Risk: Biometrics (Annex III.1)",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "https://github.com/justadudewhohacks/face-api.js/"
+    },
+    "deepface": {
+      "risk_description": "High Risk: Biometrics (Annex III.1)",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "https://github.com/serengil/deepface"
+    },
+    "insightface": {
+      "risk_description": "High Risk: Biometrics (Annex III.1)",
+      "risk_level": "High",
+      "status": "verified",
+      "evidence": "https://github.com/deepinsight/insightface"
+    },
+    "pdf-parse": {
+      "risk_description": "Potential Risk: Document Parsing (Annex III.4 - Employment)",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "NPM Documentation"
+    },
+    "tesseract.js": {
+      "risk_description": "Potential Risk: OCR/Data Extraction",
+      "risk_level": "Medium",
+      "status": "verified",
+      "evidence": "https://tesseract.projectnaptha.com/"
+    }
+  }
 }

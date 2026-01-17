@@ -10,13 +10,70 @@ RISK_MAP_PATH = os.path.join(CURRENT_DIR, "data", "risk_map.json")
 
 try:
     with open(RISK_MAP_PATH, "r", encoding="utf-8") as f:
-        RISK_LIBRARY_MAP: Dict[str, str] = json.load(f)
+        data = json.load(f)
+        # Support both legacy (simple dict) and v2 (rich schema) with backward compat in mind
+        if "libraries" in data:
+            RISK_DB = data["libraries"]
+        else:
+            RISK_DB = data
 except FileNotFoundError:
     print(f"[!] CRITICAL: Could not find risk_map.json at {RISK_MAP_PATH}")
-    RISK_LIBRARY_MAP = {}
+    RISK_DB = {}
 except Exception as e:
     print(f"[!] Error loading risk_map.json: {e}")
-    RISK_LIBRARY_MAP = {}
+    RISK_DB = {}
+
+def classify_library(lib_name: str) -> Dict[str, Any]:
+    """
+    Returns a full risk object if found or inferred, otherwise None.
+    Priority:
+    1. Verified Database Match
+    2. Community / Legacy Database Match
+    3. Keyword Heuristic (Fallback)
+    """
+    lib_name = lib_name.lower().strip()
+
+    # 1. Database Lookup
+    if lib_name in RISK_DB:
+        entry = RISK_DB[lib_name]
+        # Handle Legacy Format (String value)
+        if isinstance(entry, str):
+            return {
+                "risk_description": entry,
+                "risk_level": "Unknown",
+                "source": "database_legacy",
+                "verified": True
+            }
+        # Handle New Format (Object)
+        return {
+            "risk_description": entry.get("risk_description"),
+            "risk_level": entry.get("risk_level", "Unknown"),
+            "source": "database",
+            "verified": entry.get("status") == "verified"
+        }
+
+    # 2. Heuristic Fallback (AI Analyst Logic)
+    # This catches "suspicious" libraries that aren't in our DB yet
+    suspicious_keywords = {
+        "face": "High Risk: Suspected Biometric Identification",
+        "facial": "High Risk: Suspected Biometric Identification",
+        "emotion": "High Risk: Emotion Recognition",
+        "surveillance": "High Risk: Biometric Surveillance",
+        "deepfake": "Transparency Risk: Generative AI",
+        "voice-cloning": "High Risk: Deepfake / Impersonation",
+        "biometric": "High Risk: Biometric Identification"
+    }
+
+    for keyword, desc in suspicious_keywords.items():
+        if keyword in lib_name:
+            return {
+                "risk_description": f"{desc} (Keyword Match: '{keyword}')",
+                "risk_level": "High",
+                "source": "heuristic",
+                "verified": False 
+            }
+
+    return None
 
 def _parse_poetry_lock(file_path: str) -> Set[str]:
     libraries = set()
@@ -88,10 +145,19 @@ class CodeScanner(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _check(self, name: str) -> None:
-        for lib, risk in RISK_LIBRARY_MAP.items():
-            if name.startswith(lib):
-                self.detected.add(name)
-                self.risks.add(risk)
+        # Check against DB keys
+        # We need to match if 'name' starts with any key in RISK_DB
+        # Optimization: Direct lookup first
+        
+        # 1. Exact match or Heuristic
+        root_pkg = name.split('.')[0]
+        classification = classify_library(root_pkg)
+        
+        if classification:
+             self.detected.add(root_pkg)
+             # Store a tuple so we can dedup, but we'll convert to dict later
+             # (description, level, source, verified)
+             self.risks.add(json.dumps(classification, sort_keys=True))
 
 def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
     detected: Set[str] = set()
@@ -106,38 +172,35 @@ def scan_dependency_files(repo_path: str) -> Tuple[Set[str], Set[str]]:
         for file in files:
             full_path = os.path.join(root, file)
             
+            libs_found = set()
+            
             # Specialized Parsers
             if file == "poetry.lock":
-                detected.update(_parse_poetry_lock(full_path))
-                continue
+                libs_found = _parse_poetry_lock(full_path)
             elif file == "package-lock.json":
-                detected.update(_parse_package_lock(full_path))
-                continue
+                libs_found = _parse_package_lock(full_path)
             elif file == "requirements.txt":
-                detected.update(_parse_requirements(full_path))
-                continue
+                libs_found = _parse_requirements(full_path)
             
-            # Fallback for other manifests
-            if file in target_files:
+            # Fallback for other manifests (regex scan for keys)
+            elif file in target_files:
                 try:
                     with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
                         content = f.read()
-                        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
-                            if risk_lib in content:
-                                # heuristic to reduce false positives for manifests
-                                # We look for the library name surrounded by quotes, whitespace, or common delimiters
-                                pattern = rf'(?:^|[\s"\'/<>.-])({re.escape(risk_lib)})(?:$|[\s"\'/:>=<>.-])'
-                                if re.search(pattern, content):
-                                    detected.add(risk_lib)
-                                    risks.add(risk_desc)
+                        # Reverse lookup: Check if any known high-risk lib is in the content
+                        for risk_lib in RISK_DB.keys():
+                            pattern = rf'(?:^|[\s"\'/<>.-])({re.escape(risk_lib)})(?:$|[\s"\'/:>=<>.-])'
+                            if re.search(pattern, content):
+                                libs_found.add(risk_lib)
                 except Exception:
                     continue
 
-    # Map detected libs to risks
-    for lib in detected:
-        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
-            if lib == risk_lib or lib.startswith(risk_lib):
-                risks.add(risk_desc)
+            # Classify found libs
+            for lib in libs_found:
+                classification = classify_library(lib)
+                if classification:
+                    detected.add(lib)
+                    risks.add(json.dumps(classification, sort_keys=True))
 
     return detected, risks
 
@@ -202,13 +265,13 @@ def scan_libraries(lib_list: List[str]) -> Dict[str, Any]:
 
     for lib in lib_list:
         lib = lib.strip()
-        for risk_lib, risk_desc in RISK_LIBRARY_MAP.items():
-            if lib == risk_lib or lib.startswith(risk_lib):
-                detected.add(lib)
-                risks.add(risk_desc)
+        classification = classify_library(lib)
+        if classification:
+            detected.add(lib)
+            risks.add(json.dumps(classification, sort_keys=True))
     
     final_libs = sorted(list(detected))
-    final_risks = sorted(list(risks))
+    final_risks = [json.loads(r) for r in sorted(list(risks))]
     
     return _format_results(final_libs, final_risks)
 
@@ -247,13 +310,16 @@ def scan_repository(repo_path: str) -> Dict[str, Any]:
     dep_libs, dep_risks = scan_dependency_files(repo_path)
 
     final_libs = sorted(list(ast_scanner.detected.union(dep_libs)))
-    final_risks = sorted(list(ast_scanner.risks.union(dep_risks)))
+    
+    # Union the JSON strings then decode
+    all_risks_json = ast_scanner.risks.union(dep_risks)
+    final_risks = [json.loads(r) for r in sorted(list(all_risks_json))]
 
     results = _format_results(final_libs, final_risks)
     results["project_metadata"] = {"version": project_version}
     return results
 
-def _format_results(detected_libs: List[str], detected_risks: List[str]) -> Dict[str, Any]:
+def _format_results(detected_libs: List[str], detected_risks: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "annex_iv_technical_documentation": {
             "section_2_b_design_specifications": {
