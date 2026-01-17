@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/svel26/ai-act-check.git"
+        "url": "git+https://github.com/Svel26/ai-act-check.git"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
