@@ -6,7 +6,7 @@ long_description = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="ai-act-check",
-    version="1.0.5",
+    version="1.0.6",
     description="Static scanner and Annex IV drafter for EU AI Act compliance (prototype)",
     long_description=long_description,
     long_description_content_type="text/markdown",
