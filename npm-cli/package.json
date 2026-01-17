@@ -1,0 +1,28 @@
+{
+    "name": "ai-act-check",
+    "version": "1.0.4",
+    "description": "AnnexFour Compliance Scanner CLI Wrapper",
+    "main": "bin/index.js",
+    "bin": {
+        "ai-act-check": "./bin/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/svel26/ai-act-check.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "ai-act",
+        "compliance",
+        "security"
+    ],
+    "author": "AnnexFour",
+    "license": "ISC",
+    "dependencies": {
+        "commander": "^11.0.0",
+        "inquirer": "^9.0.0"
+    },
+    "type": "module"
+}

@@ -21,7 +21,8 @@ setup(
     },
     install_requires=[
         "python-dotenv>=0.19.0",
-        "openai>=0.27.0"
+        "openai>=0.27.0",
+        "requests>=2.25.0"
     ],
     entry_points={
         "console_scripts": [
