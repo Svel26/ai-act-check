@@ -3,7 +3,7 @@ import json
 import pytest
 from ai_act_check.scanner import scan_repository
 from ai_act_check import cli
-from ai_act_check import drafter
+from ai_act_check import public_drafter as drafter
 
 def test_biometric_detection(tmp_path):
     """
@@ -63,6 +63,6 @@ def test_generate_annex_iv_mock():
             "risk_classification_detected": ["High Risk: Biometrics (Annex III.1)"]
         }
     }
-    report = drafter.generate_annex_iv(sample, provider="mock")
+    report = drafter.generate_teaser(sample)
     assert "Section 2(b)" in report
-    assert "Biometric" in report or "biometric" in report or "High Risk" in report
+    assert "High Risk" in report
